@@ -1,0 +1,166 @@
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="position-sticky pt-3" style="height: 100%;overflow: auto;">
+
+
+    <ul class="list-unstyled ps-0">
+
+      <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#main-collapse" aria-expanded="true">
+          主页
+        </button>
+        <div class="collapse show" id="main-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <li><a href="{% url 'client_number' %}" class="link-dark rounded">主页</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="border-top my-3"></li>
+
+
+
+      <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+          账号管理
+        </button>
+        <div class="collapse show" id="home-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+
+
+            <li><a href="{% url 'number_jinyan' %}" class="link-dark rounded">群发禁言</a></li>
+<!--            <li><a href="{% url 'number_index' %}" class="link-dark rounded">私信双向</a></li>-->
+<!--            <li><a href="{% url 'number_index' %}" class="link-dark rounded">私信频繁</a></li>-->
+            <li><a href="{% url 'number_xiaohao' %}" class="link-dark rounded">官方销号</a></li>
+            <li><a href="{% url 'manual_login' %}" class="link-dark rounded">手工登录</a></li>
+
+          </ul>
+        </div>
+      </li>
+      <li class="border-top my-3"></li>
+      <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="true">
+          群发管理
+        </button>
+        <div class="collapse show" id="dashboard-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li><a href="{% url 'number_index' %}" class="link-dark rounded">账号列表</a></li>
+            <li><a href="{% url 'channel_send' %}" class="link-dark rounded">控制台</a></li>
+            <li><a href="{% url 'channel_sendContent' %}" class="link-dark rounded">广告词</a></li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="border-top my-3"></li>
+      <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#jiachannel-collapse" aria-expanded="true">
+          加群管理
+        </button>
+        <div class="collapse show" id="jiachannel-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li><a href="{% url 'number_nojoin' %}" class="link-dark rounded">账号列表</a></li>
+              <li><a href="{% url 'channel_join' %}" class="link-dark rounded">控制台 (公开群)</a></li>
+            <li><a href="{% url 'channel_save' %}" class="link-dark rounded">群组库 (公开群)</a></li>
+            <li><a href="{% url 'collection_channelUrl' %}" class="link-dark rounded">采集群链接 (公开群)</a></li>
+             <li class="border-top my-3"></li>
+            <li><a href="{% url 'private_channel_save' %}" class="link-dark rounded">群组库 (私人群)</a></li>
+            <li><a href="{% url 'private_channel_console' %}" class="link-dark rounded">控制台 (私人群)</a></li>
+          </ul>
+        </div>
+      </li>
+
+
+
+
+        <li class="border-top my-3"></li>
+
+      <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#PrivateLetter-collapse" aria-expanded="true">
+          私信管理
+        </button>
+        <div class="collapse show" id="PrivateLetter-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li><a href="{% url 'user_numberList' %}" class="link-dark rounded">私信账号</a></li>
+              <li><a href="{% url 'user_console' %}" class="link-dark rounded">控制台</a></li>
+            <li><a href="{% url 'user_advertiseContent' %}" class="link-dark rounded">广告词</a></li>
+            <li><a href="{% url 'user_save' %}" class="link-dark rounded">用户库</a></li>
+            <li><a href="{% url 'collection_channelUser' %}" class="link-dark rounded">采集用户ID</a></li>
+          </ul>
+        </div>
+      </li>
+
+
+
+
+      <li class="border-top my-3"></li>
+
+      <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#template-collapse" aria-expanded="true">
+          模板管理
+        </button>
+        <div class="collapse show" id="template-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li><a href="{% url 'TemplateNumber_list' %}" class="link-dark rounded">设置模板账号</a></li>
+              <li><a href="{% url 'template_manage_console' %}" class="link-dark rounded">模板控制台</a></li>
+            <li><a href="{% url 'template_manage' %}" class="link-dark rounded">模板管理</a></li>
+          </ul>
+        </div>
+      </li>
+
+
+<!--      <li class="border-top my-3"></li>-->
+
+<!--      <li class="mb-1">-->
+<!--        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#collection-collapse" aria-expanded="true">-->
+<!--          采集管理-->
+<!--        </button>-->
+<!--        <div class="collapse show" id="collection-collapse">-->
+<!--          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">-->
+<!--              -->
+
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </li>-->
+
+
+
+      <li class="border-top my-3"></li>
+<!--      <li class="mb-1">-->
+<!--        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#AutomaticSup-collapse" aria-expanded="true">-->
+<!--          自动注册-->
+<!--        </button>-->
+<!--        <div class="collapse show" id="AutomaticSup-collapse">-->
+<!--          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">-->
+<!--              <li><a href="{% url 'automaticSupSms_man' %}" class="link-dark rounded">sms_man</a></li>-->
+<!--              <li><a href="{% url 'automaticSup_api1' %}" class="link-dark rounded">API 接码注册</a></li>-->
+<!--              <li><a href="{% url 'automaticSup_ahasim' %}" class="link-dark rounded">越南码</a></li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </li>-->
+<!--      <li class="border-top my-3"></li>-->
+
+      <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#set_telethon_apidata-collapse" aria-expanded="true">
+          开发号管理
+        </button>
+        <div class="collapse" id="set_telethon_apidata-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li><a href="{% url 'set_telethon_apidata' %}" class="link-dark rounded">开发号</a></li>
+
+          </ul>
+        </div>
+      </li>
+
+      <li class="border-top my-3"></li>
+
+
+
+
+
+
+    </ul>
+
+
+
+
+
+      </div>
+    </nav>

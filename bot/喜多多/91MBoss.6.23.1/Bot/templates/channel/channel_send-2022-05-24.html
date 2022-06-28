@@ -1,0 +1,295 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+<style>
+    #console-log{
+        max-height:800px;
+        overflow:auto;
+    }
+
+    #console-log::-webkit-scrollbar-track {
+        background-color: #dee2e6;
+    }
+
+    #console-log::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #console-log::-webkit-scrollbar-thumb {
+        background-color: #adb5bd;
+        border-radius: 15%;
+    }
+
+    .input-group-text{
+        width:160px;
+    }
+
+</style>
+
+<div class="container-fluid">
+
+    <div class="container p-5 my-5 border">
+
+
+    <form class="row g-3" action="{% url 'channel_send' %}" method="post">
+       <div class="g-3 row" style=""display:none;>
+           <div class="input-group">
+                <span class="input-group-text">客户号</span>
+
+                <input type="text" class="form-control" value="{{ context.config.client_number }}" name="client_number">
+            </div>
+        </div>
+
+        <div class="g-3 row">
+           <div class="input-group">
+                <span class="input-group-text">群发间隔时间</span>
+                <input type="text" class="form-control" value="{{ context.config.sleep_time }}" name="sleep_time" id="sleep_time">
+               <span class="input-group-text">秒</span>
+           </div>
+        </div>
+
+        <div class="g-3 row">
+           <div class="input-group">
+                <span class="input-group-text">是否启用伪内容</span>
+                <input type="text" class="form-control" value="{{ context.config.is_fake_content }}" name="is_fake_content">
+               <span class="input-group-text">1-启用，2-不启用</span>
+           </div>
+        </div>
+
+        <div class="g-3 row">
+           <div class="input-group">
+                <span class="input-group-text">伪内容生效时间</span>
+                <input type="text" class="form-control" value="{{ context.config.fake_content_sleep_time }}" name="fake_content_sleep_time">
+               <span class="input-group-text">秒</span>
+           </div>
+        </div>
+
+
+        <div class="g-3 row">
+            <div class="input-group">
+                <span class="input-group-text">自动回复</span>
+                <textarea required class="form-control" aria-label="With textarea" name="automaticReply">{{ context.config.automaticReply }}</textarea>
+            </div>
+        </div>
+
+
+
+        <div class="g-3 row">
+            <div class="input-group">
+                <span class="input-group-text">群发工作状态</span>
+<!--                <input type="text" class="form-control" value="{{ context.config.StartGroupSendTask }}" name="StartGroupSendTask" id="StartGroupSendTask">-->
+<!--                <span class="input-group-text">1-开始，2-停止</span>-->
+                <select class="form-select" aria-label="Default select example" name="StartGroupSendTask" id="StartGroupSendTask">
+                    {% if context.config.StartGroupSendTask == '2' %}
+                        <option selected value="2">停止</option>
+                    {% else %}
+                        <option value="2">停止</option>
+                    {% endif %}
+
+
+                    {% if context.config.StartGroupSendTask == '1' %}
+                        <option value="1" selected>开始</option>
+                    {% else %}
+
+                        <option value="1">开始</option>
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+
+
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">保存</button>
+        </div>
+
+    </form>
+
+
+
+    </div>
+
+
+
+    <div class="container p-5 my-5 border" id="console-log"></div>
+    <div style="height:50px;"></div>
+</div>
+
+<script>
+
+    function addZero(s){
+        return s<10 ? ('0'+s):s;
+    }
+
+
+
+    function getNowTime(){
+        date = new Date();
+
+        // 年
+        var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+
+
+        return year + "-" + addZero(month) + "-" + addZero(day) + " " + addZero(hour) + ":" + addZero(minute) + ":" +addZero(second);
+    }
+
+
+
+
+
+
+
+    var channelSend = {}
+
+    channelSend.sleep_time = $("#sleep_time").val() * 1000;
+
+    $(function(){
+
+
+
+            // 获取账号  开始分发任务
+            channelSend.init_sendMessage = function(){
+
+                $.post("{% url 'get_oknumber' %}", {}, function(result){
+
+                    console.log(result);
+                    if (result['status'] == true) {
+
+                        $("#console-log").prepend("<p>"+getNowTime()+" 本轮工作账号： "+result.list.length+" 个</p>");
+
+                        channelSend.send_message_start(result['list'])
+                    } else {
+                        setTimeout(function(){ channelSend.init_sendMessage() }, 10000);
+                    }
+
+                },'json')
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+
+            channelSend.send_message_start = function(number_list=[]){
+
+
+                if ($.isArray(number_list) != true) {
+
+                    setTimeout(function(){
+                        $("#console-log").prepend("<p>"+getNowTime()+" 本轮工作结束，5秒后开始新一轮任务</p>");
+                        channelSend.init_sendMessage()
+                    }, 5000);
+                    return false;
+                }
+
+
+                if (number_list.length <= 0) {
+
+                    setTimeout(function(){
+                        $("#console-log").prepend("<p>"+getNowTime()+" 本轮工作结束，5秒后开始新一轮任务</p>");
+                        channelSend.init_sendMessage()
+                    }, 5000);
+                    return false;
+                }
+
+
+
+                var Work_number = number_list.shift();
+                console.log(Work_number);
+
+
+                // $("#console-log").prepend("<p>"+getNowTime()+" 账号： " + Work_number.session_string + " 开始发消息</p>");
+                $.post("{% url 'channel_sendsubmit' %}", {session_string:Work_number.session_string}, function(result){
+
+
+                    var string = getNowTime()+" 账号： " + Work_number.session_string
+
+                    if (result.status === false) {
+                        string = string + " → 群发失败：" + result.message;
+                    } else {
+                        string = string + " → 【" + result.channel.channel.username +"：" + result.channel.channel.name + "】 → " + result.send_content
+                    }
+                    $("#console-log").prepend("<p>"+string+ " </p>");
+
+
+
+                    console.log(result);
+
+                    setTimeout(function(){
+
+
+                        channelSend.send_message_start(number_list)
+                    }, channelSend.sleep_time);
+
+                },'json')
+
+
+
+
+
+                return true;
+
+
+
+
+
+
+
+                // $.each(number_list, function(idx, item){
+
+                //     console.log(item);
+
+
+
+
+                // });
+
+                return true;
+
+            };
+
+
+
+
+
+
+
+
+
+
+
+
+            var StartGroupSendTask = $("#StartGroupSendTask").val();
+            console.log(StartGroupSendTask)
+            if (StartGroupSendTask == '1'){ // 任务开启工作
+                // 间隔时间
+
+                setTimeout(function(){ channelSend.init_sendMessage() }, 3000);
+
+            }
+
+
+
+
+
+
+    })
+
+
+</script>
+
+
+{% endblock 'content' %}
+

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>91M Boss</title>
+
+<!--    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/sidebars/">-->
+<!--    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/dashboard/">-->
+
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    {% load static %}
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'assets/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <style>
+
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .sidebar{
+        height:100%,
+        overflow:auto
+      }
+
+
+
+
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'sidebars/sidebars.css' %}" rel="stylesheet">
+    <link href="{% static 'dashboard/dashboard.css' %}" rel="stylesheet">
+    <script>
+      var Bs91m = {}
+    </script>
+
+  </head>
+  <body style="height: 100%;overflow-y: hidden;">
+
+
+{% include "common/head.html" %}
+
+<div class="container-fluid" >
+  <div class="row">
+
+    {% include "common/slide.html" %}
+    <main class="col-md-10 ms-sm-auto col-lg-10 px-md-4" style="height:100%;overflow:auto;padding-top: 50px;">
+      {% block 'content' %} {% endblock %}
+
+
+
+
+    </main>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="{% static 'assets/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'sidebars/sidebars.js' %}"></script>
+  <script src="{% static 'dashboard/dashboard.js' %}"></script>
+  </body>
+</html>

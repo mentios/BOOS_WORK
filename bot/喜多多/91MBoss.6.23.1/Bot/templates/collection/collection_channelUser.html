@@ -1,0 +1,296 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+<style>
+    #console-log{
+        max-height:500px;
+        overflow:auto;
+
+    }
+
+    #console-log::-webkit-scrollbar-track {
+        background-color: #dee2e6;
+    }
+
+    #console-log::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #console-log::-webkit-scrollbar-thumb {
+        background-color: #adb5bd;
+        border-radius: 15%;
+    }
+
+    .input-group-text{
+        width:160px;
+    }
+
+    .top-message{
+        padding: 13px;
+        border: 1px solid #dedede;
+        margin: 10px;
+        border-radius:8px;
+    }
+
+</style>
+
+
+
+<!--     'CHANNEL':'https://t.me/sichouzhilu0',
+    'TIME_FILTER_DAYS':1,
+    'IS_SPECIFY_GROUP':1,
+    'IS_FILTER_PHOTO':1,
+    'ID_FILTER_LEN':5,
+ -->
+<div class="container-fluid">
+
+    <div class="container p-5 my-5 border" >
+
+
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+
+                <p>1. 采集功能：打开软件目录- 91MBoss-session/采集账号/(放入采集的账号可放多个)<p>
+
+                <p>2. 采集结果：打开软件目录- 91MBoss/采集结果/用户ID/ (采集完成后即可找到群用户ID)<p>
+
+                <p>3. 运行模式：采集过程中不要操作页面其他功能，软件运行中无法停止，除非关闭软件.<p>
+
+                <p>4. 采集模式：目标群链接(一行一个)私人群要填邀请链接，频道无法采集。<p>
+
+
+
+
+<!--                <p>1. 文件夹下必须存在采集账号才可以使用采集功能：<br><a href="javascript:;">{{ context.collection_dir }}</a></p>-->
+<!--                <p>2. 采集结果保存文件夹位置：<br><a href="javascript:;">{{ context.result_dir }}</a></p>-->
+<!--                <p>3. 采集一旦开始无法停止，除非关闭软件，请酌情使用。</p>-->
+<!--                <p>4. 采集的过程中尽量不要做其他事情，系统为了加快采集进度，已经最大程度调用电脑性能。</p>-->
+<!--                <p>5. 采集指定公开群，多个群换行隔开。</p>-->
+            </div>
+        </div>
+    </div>
+
+
+    <form class="row g-3" action="" method="post">
+
+        <div class="g-3 row">
+            <div class="input-group">
+                <span class="input-group-text">模式</span>
+
+                <select class="form-select" aria-label="Default select example" name="IS_SPECIFY_GROUP" id="IS_SPECIFY_GROUP">
+                    <option value="1" selected>指定公开群采集</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="g-3 row">
+            <div class="input-group">
+                <span class="input-group-text">群链接</span>
+                <textarea required class="form-control" aria-label="With textarea" name="channel" id="channel" value="" style="height:200px;"></textarea>
+            </div>
+        </div>
+
+
+        <div class="g-3 row">
+            <div class="input-group">
+                <span class="input-group-text">头像过滤</span>
+                <select class="form-select" aria-label="Default select example" name="IS_FILTER_PHOTO" id="IS_FILTER_PHOTO">
+                    <option value="1" selected>过滤无头像</option>
+                    <option value="2" >不过滤无头像</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="g-3 row">
+            <div class="input-group">
+                <span class="input-group-text">ID长度过滤</span>
+                <input type="number" class="form-control" value="15" name="ID_FILTER_LEN" id="ID_FILTER_LEN">
+            </div>
+        </div>
+
+
+
+        <div class="g-3 row">
+            <div class="input-group">
+                <span class="input-group-text">时间范围</span>
+                <input type="number" class="form-control" value="2" name="TIME_FILTER_DAYS" id="TIME_FILTER_DAYS">
+                <span class="input-group-text">天</span>
+            </div>
+        </div>
+
+
+
+        <div class="col-auto">
+            <button type="button" class="btn btn-primary mb-3" id="submit">开始</button>
+        </div>
+
+    </form>
+
+
+
+    </div>
+
+    <div class="container p-5 my-5 border" id="console-log"></div>
+    <div style="height:150px;"></div>
+
+</div>
+
+<script>
+
+    function addZero(s){
+        return s<10 ? ('0'+s):s;
+    }
+
+
+
+    function getNowTime(){
+        date = new Date();
+
+        // 年
+        var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+
+
+        return year + "-" + addZero(month) + "-" + addZero(day) + " " + addZero(hour) + ":" + addZero(minute) + ":" +addZero(second);
+    }
+
+    function unique(arr) {
+
+        var array= arr;
+
+        var len = array.length;
+
+
+
+    array.sort(function(a,b){   //排序后更加方便去重
+
+        return a - b;
+
+    })
+
+
+
+    function loop(index){
+
+        if(index >= 1){
+
+            if(array[index] === array[index-1]){
+
+                array.splice(index,1);
+
+            }
+
+            loop(index - 1);    //递归loop，然后数组去重
+
+        }
+
+    }
+
+    loop(len-1);
+
+    return array;
+
+}
+
+
+    var Bs91m = {}
+
+
+    $(function(){
+// https://t.me/bs91m990
+
+    // 'CHANNEL':'https://t.me/sichouzhilu0',
+    // 'TIME_FILTER_DAYS':1,
+    // 'IS_SPECIFY_GROUP':1,
+    // 'IS_FILTER_PHOTO':1,
+    // 'ID_FILTER_LEN':5,
+
+
+
+        $("#submit").click(function(){
+            var channel = $("#channel").val();
+
+            //channel = channel.replace(/(^\s*)|(\s*$)/g, "");
+            channel = channel.split("\n");
+            channel = unique(channel);
+
+            channel = channel.filter(function (s) {
+
+                return s && s.trim(); // 注：IE9(不包含IE9)以下的版本没有trim()方法
+            });
+            console.log(channel);
+
+
+            var param = {
+                IS_SPECIFY_GROUP:$("#IS_SPECIFY_GROUP").val(),
+                TIME_FILTER_DAYS:$("#TIME_FILTER_DAYS").val(),
+                IS_FILTER_PHOTO:$("#IS_FILTER_PHOTO").val(),
+                ID_FILTER_LEN:$("#ID_FILTER_LEN").val()
+            };
+
+            console.log(channel.length)
+
+            if (param.IS_SPECIFY_GROUP == '1') {
+                if (channel.length < 1) {
+                    alert("请输入要采集的群链接")
+                    return false
+                }
+            }
+
+
+            $("#console-log").prepend("<p>"+getNowTime() + " 开始采集..." +"</p>");
+            setTimeout(function(){
+
+                $.each(channel, function (idx, item) {
+                    console.log(item);
+                    param.CHANNEL = item;
+                    console.log(param);
+
+                    // $("#console-log").prepend("<p>"+getNowTime() + " 正在开始采集： " + item +"</p>");
+
+                    $.ajax({
+                        url:"{% url 'collection_channelUser_submit' %}",
+                        error:function(xhr){
+                            $("#console-log").prepend("<p>"+getNowTime() + "错误提示： " + xhr.status + " " + xhr.statusText +"</p>");
+                        },
+                        async:false,
+                        success:function(result){
+
+                            console.log(result);
+                            $("#console-log").prepend("<p>"+getNowTime()+" ： "+result.message+" </p>");
+
+                        },
+                        dataType:"json",
+                        data:param,
+                        type:"POST",
+                        timeout:(1000*60*15),
+                    });
+
+                });
+
+             }, 1000);
+
+
+
+
+
+        });
+
+    })
+
+
+
+
+
+</script>
+
+
+{% endblock 'content' %}
+

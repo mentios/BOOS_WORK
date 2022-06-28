@@ -1,0 +1,168 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+<style>
+    #console-log{
+        max-height:300px;
+        overflow:auto;
+    }
+
+    #console-log::-webkit-scrollbar-track {
+        background-color: #dee2e6;
+    }
+
+    #console-log::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #console-log::-webkit-scrollbar-thumb {
+        background-color: #adb5bd;
+        border-radius: 15%;
+    }
+
+    .input-group-text{
+        width:160px;
+    }
+
+</style>
+
+<div class="container-fluid">
+
+    <div class="container p-5 my-5 border">
+
+
+        <form class="row g-3" action="{% url 'automaticSup_ahasim' %}" method="post">
+           <div class="g-3 row">
+               <div class="input-group">
+                    <span class="input-group-text" style="width:80px;">秘钥</span>
+                    <input type="text" class="form-control" value="{{ context.config.SecretKey }}" name="SecretKey">
+               </div>
+           </div>
+
+
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary btn-sm">保存</button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-primary btn-sm" id="submit1">开始</button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-primary btn-sm" id="submit2">停止</button>
+            </div>
+
+        </form>
+
+
+
+    </div>
+
+    <div class="container p-5 my-5 border" id="console-log"></div>
+
+</div>
+
+<script>
+    function addZero(s){
+        return s<10 ? ('0'+s):s;
+    }
+
+
+
+    function getNowTime(){
+        date = new Date();
+
+        // 年
+        var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+
+
+        return "【"+year + "-" + addZero(month) + "-" + addZero(day) + " " + addZero(hour) + ":" + addZero(minute) + ":" +addZero(second)+"】";
+    }
+
+
+    Bs91m = {}
+    Bs91m.sup_switch = 2;
+
+    $(function(){
+
+
+
+
+        Bs91m.start = function(){
+
+            if (Bs91m.sup_switch == '2') {
+
+                $("#console-log").prepend("<p>"+getNowTime()+" 已停止工作</p>");
+                return false;
+            }
+
+            // 获取工作账号
+            $.post("{% url 'get_supNumber' %}", {action_token:'ahasim.com'}, function(result){
+
+
+                if (result['status'] == true) {
+                    $("#console-log").prepend("<p>"+getNowTime()+ result['message'] +"</p>");
+
+                    // api_respose
+                    // 打开 弹框开始
+                    var sup = "{% url 'sup_ahasim' %}" + "?api_respose=" + result['api_respose'] +"&phone="+ result['phone']
+                    console.log(sup);
+                    var myWindow = window.open(sup,'','width=880,height=600');
+                    console.log(myWindow)
+                    // 检查成功与否
+
+
+                } else {
+
+                    $("#console-log").prepend("<p>"+getNowTime()+ result['message'] +" 5秒之后重新开始工作</p>");
+                    setTimeout(function(){
+
+                        Bs91m.start()
+                    }, 5000);
+                    return false;
+                }
+
+            },'json');
+
+
+        }
+
+
+
+
+
+
+
+
+
+        $("#submit1").click(function(){
+            Bs91m.sup_switch = 1;
+
+            $("#console-log").prepend("<p>"+getNowTime()+" 开始工作</p>");
+
+            Bs91m.start();
+        });
+
+
+
+
+    });
+
+        window.addEventListener('message',(msg)=>{
+            console.log(msg.data);
+            $("#console-log").prepend("<p>"+getNowTime()+ msg.data.p +" </p>");
+            //M = JSON.stringify(msg.data)
+            //console.log(M.replace(/^(\s|")+|(\s|")+$/g, ''));
+            if ("son_close" == msg.data.code) {
+                console.log("重新开始");
+                Bs91m.start();
+            }
+        })
+
+</script>
+
+
+{% endblock 'content' %}
+

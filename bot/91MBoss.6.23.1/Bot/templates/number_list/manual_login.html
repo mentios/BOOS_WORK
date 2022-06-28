@@ -1,0 +1,110 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+
+<style>
+    .top-message{
+        padding: 23px;
+        border: 1px solid #dedede;
+        margin: 20px;
+        border-radius:8px;
+    }
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+                <p>第一步输入手机号\TG账号 → 并点击按钮 【登录/获取验证码】</p>
+                <p>第二步输入验证码有二次验证码则一并输入二次验证码 → 并点击按钮 【登录/获取验证码】</p>
+                <p>注意：实际登录成功以文件夹【91MBoss-session/手工登录/登录成功】下的为准，<br> 文件夹【91MBoss-session/手工登录/】下的账号删除了可以重新登录</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col" >
+            <div class="top-message">
+                <p style="color:red">{{ context.message }}</p>
+                <form class="row g-3" action="{% url 'manual_login' %}" method="post">
+
+                    <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">账号/手机号</span>
+                            <input required type="text" class="form-control" value="{{ context.session_number }}" name="session_number" id="session_number">
+                        </div>
+                    </div>
+
+                     <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">验证码</span>
+                            <input type="text" class="form-control" value="{{ context.verification_code }}" name="verification_code" id="verification_code">
+                        </div>
+                    </div>
+
+                     <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">二级验证码</span>
+                            <input type="text" class="form-control" value="{{ context.password }}" name="password" id="password">
+                        </div>
+                    </div>
+
+                    <div style="display:none;">
+                        <input  text="hidden" name="phone_code_hash" value="{{ context.phone_code_hash }}">
+                    </div>
+
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">登录/获取验证码</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+ <div class="row">
+        <div style="padding-bottom: 30px;">
+            <table class="table table-hover .table-responsive">
+            <thead>
+                <tr>
+                    <th scope="col">手工登录成功账号</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in context.manual_login_ok %}
+                <tr>
+                    <td>
+                        {{ i.session_string }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="height:50px;"></div>
+</div>
+
+<script>
+    $(function(){
+        var print_message = "{{ context.message }}"
+        if (print_message == '登录成功'){
+            $("#session_number").val("")
+            $("#password").val("")
+            $("#verification_code").val("")
+            $("#phone_code_hash").val("")
+        }
+
+    })
+
+
+</script>
+
+
+
+
+{% endblock 'content' %}

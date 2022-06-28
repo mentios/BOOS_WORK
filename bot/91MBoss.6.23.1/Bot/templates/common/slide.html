@@ -1,0 +1,66 @@
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="position-sticky pt-3" style="height: 100%;overflow: auto;">
+
+
+    <ul class="list-unstyled ps-0">
+
+      <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#main-collapse" aria-expanded="true">
+          主页
+        </button>
+        <div class="collapse show" id="main-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <li><a href="{% url 'client_number' %}" class="link-dark rounded">主页</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="border-top my-3"></li>
+
+
+
+      <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+          账号管理
+        </button>
+        <div class="collapse show" id="home-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+
+
+            <li><a href="{% url 'number_jinyan' %}" class="link-dark rounded">群发禁言</a></li>
+<!--            <li><a href="{% url 'number_index' %}" class="link-dark rounded">私信双向</a></li>-->
+<!--            <li><a href="{% url 'number_index' %}" class="link-dark rounded">私信频繁</a></li>-->
+            <li><a href="{% url 'number_xiaohao' %}" class="link-dark rounded">官方销号</a></li>
+            <li><a href="{% url 'manual_login' %}" class="link-dark rounded">手工登录</a></li>
+
+          </ul>
+        </div>
+      </li>
+
+<li class="border-top my-3"></li>
+      <li class="mb-1">
+        <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#set_telethon_apidata-collapse" aria-expanded="true">
+          开发号管理
+        </button>
+        <div class="collapse" id="set_telethon_apidata-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li><a href="{% url 'set_telethon_apidata' %}" class="link-dark rounded">开发号</a></li>
+
+          </ul>
+        </div>
+      </li>
+
+      <li class="border-top my-3"></li>
+
+
+
+
+
+
+    </ul>
+
+
+
+
+
+      </div>
+    </nav>

@@ -1,0 +1,81 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+
+<style>
+    .top-message{
+        padding: 23px;
+        border: 1px solid #dedede;
+        margin: 20px;
+        border-radius:8px;
+    }
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+<!--                <p>系统不可以同时加群、群发、私信、私信轰炸、单独自动回复、设置设置模板</p>-->
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div style="padding-bottom: 30px;">
+            <table class="table table-hover .table-responsive">
+            <thead>
+                <tr>
+                    <th scope="col">设置模板账号（{{ context.session_number_count }}）个</th>
+                    <th>模板信息</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in context.session_number %}
+                <tr>
+                    <td>
+                        {{ i.session_string }}
+                    </td>
+                    <td>
+                        {{ i.Template.username }} → {{ i.Template.first_name }} → {{ i.Template.last_name }}
+<!--                        <a url="{% url 'get_telegram_message' %}?phone={{ i.session_string }}" href=javascript:; onclick="Bs91m.get_telegram_message(this)" phone="{{ i.session_string }}">-->
+<!--                            <button type="button" class="btn btn-danger btn-sm">获取验证码</button>-->
+<!--                        </a>-->
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+<!--                <p>91M Boss 官方客服 小木：<a href="https://t.me/BS91M1">https://t.me/BS91M1</a></p>-->
+            </div>
+        </div>
+    </div>
+    <div style="height:50px;"></div>
+</div>
+
+<script>
+
+    $(function(){
+        Bs91m.get_telegram_message = function(t){
+            var url = $(t).attr("url");
+            var win = window.open(url, "获取验证码", "height=300, width=600");
+
+
+            setTimeout(function(){ win.document.title= $(t).attr("phone")+" → 获取验证码"; }, 1500);
+        }
+
+    })
+
+
+</script>
+
+
+
+
+{% endblock 'content' %}

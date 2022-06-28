@@ -1,0 +1,68 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+<style>
+    #console-log{
+        max-height:300px;
+        overflow:auto;
+    }
+
+    #console-log::-webkit-scrollbar-track {
+        background-color: #dee2e6;
+    }
+
+    #console-log::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #console-log::-webkit-scrollbar-thumb {
+        background-color: #adb5bd;
+        border-radius: 15%;
+    }
+
+</style>
+
+<div class="container-fluid">
+
+
+
+
+    <div class="container p-5 my-5 border">
+        <p style="color:red;">{{ context.print_message }}</p>
+        <form class="row g-3" action="{% url 'client_number' %}" method="post">
+           <div class="g-3 row">
+                <label for="staticEmail" class="col-sm-2 col-form-label">客户号</label>
+                <div class="col-auto">
+                    <input required type="text" class="form-control" value="{{ context.client_number }}" name="client_number">
+                </div>
+           </div>
+
+           <div class="g-3 row">
+                <label for="staticEmail" class="col-sm-2 col-form-label"></label>
+                <div class="col-auto">
+                    {{ context.Expire_date }}
+                </div>
+           </div>
+
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary mb-3">保存</button>
+            </div>
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
+<script>
+
+
+
+</script>
+
+
+{% endblock 'content' %}
+

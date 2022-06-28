@@ -1,0 +1,75 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+
+<style>
+    .top-message{
+        padding: 23px;
+        border: 1px solid #dedede;
+        margin: 20px;
+        border-radius:8px;
+    }
+
+</style>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+<!--                <p>多条广告词，每次群发时会随机抽一条广告词发。多设置广告词条数可有效避免官方内容频繁</p>-->
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+                <form class="row g-3" action="{% url 'channel_sendContent' %}" method="post">
+
+                    <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">广告词</span>
+                            <textarea required class="form-control" aria-label="With textarea" name="content" id="content"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">新增广告词</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="row">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                <th scope="col">广告词（{{ context.content_count }}）条</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in context.list %}
+                <tr>
+                    <td>{{ i.name }}</td>
+                    <td>{{ i.content.message }}</td>
+                    <td>
+                        <a href="{% url 'channel_delContent' %}?name={{ i.name }}">
+                            <button type="button" class="btn btn-danger btn-sm">删除</button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div style="height:50px;"></div>
+</div>
+
+
+{% endblock 'content' %}

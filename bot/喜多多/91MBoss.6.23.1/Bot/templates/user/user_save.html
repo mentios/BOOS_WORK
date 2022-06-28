@@ -1,0 +1,66 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+                <p></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+                <form class="row g-3" action="{% url 'user_save' %}" method="post">
+
+                    <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">用户ID</span>
+                            <textarea required class="form-control" aria-label="With textarea" name="user" id="user" style="height:500px;">{{ context.user }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">保存用户ID</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+    <div style="height:50px;"></div>
+</div>
+
+<script>
+
+    function addZero(s){
+        return s<10 ? ('0'+s):s;
+    }
+
+
+
+    function getNowTime(){
+        date = new Date();
+
+        // 年
+        var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+
+
+        return year + "-" + addZero(month) + "-" + addZero(day) + " " + addZero(hour) + ":" + addZero(minute) + ":" +addZero(second);
+    }
+
+
+</script>
+
+
+{% endblock 'content' %}

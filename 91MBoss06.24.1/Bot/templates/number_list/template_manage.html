@@ -1,0 +1,114 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+
+<style>
+    .top-message{
+        padding: 23px;
+        border: 1px solid #dedede;
+        margin: 20px;
+        border-radius:8px;
+    }
+
+</style>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+                <p>
+                    有头像就放在软件的同级目录  91MBoss/template-avatar/  下面
+                </p>
+                <p>
+                    头像太大，太小都会失败，先自己去手动设置一遍，没问题，再放到软件上批量设置
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+                <form class="row g-3" action="{% url 'template_manage' %}" method="post">
+
+                    <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">头像</span>
+                           <select class="form-select" aria-label="Default select example" name="avatar" id="avatar">
+                               <option value="" selected>不设置头像</option>
+                               {% for i in context.avatar_list %}
+                                    <option value="{{ i.path }}">{{ i.name }} -- {{ i.path }}</option>
+                               {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                     <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">姓</span>
+                            <input type="text" class="form-control" value="" name="last_name">
+                        </div>
+                    </div>
+
+                     <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">名</span>
+                            <input type="text" class="form-control" value="" name="first_name">
+                        </div>
+                    </div>
+
+                    <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">个人简介</span>
+                            <textarea class="form-control" aria-label="With textarea" name="about" id="about"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">新增模板</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="row">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                <th scope="col">模板（{{ context.content_count }}）条</th>
+                <th scope="col">姓</th>
+                <th scope="col">名</th>
+                <th scope="col">个人简介</th>
+                <th scope="col">头像</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in context.list %}
+                <tr>
+                    <td>{{ i.name }}</td>
+                    <td>{{ i.last_name }}</td>
+                    <td>{{ i.first_name }}</td>
+                    <td>{{ i.about }}</td>
+                    <td>{{ i.avatar }}</td>
+                    <td>
+                        <a href="{% url 'template_manage_del' %}?name={{ i.name }}">
+                            <button type="button" class="btn btn-danger btn-sm">删除</button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div style="height:50px;"></div>
+</div>
+
+
+{% endblock 'content' %}

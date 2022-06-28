@@ -1,0 +1,230 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+<style>
+    #console-log{
+        max-height:300px;
+        overflow:auto;
+    }
+
+    #console-log::-webkit-scrollbar-track {
+        background-color: #dee2e6;
+    }
+
+    #console-log::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #console-log::-webkit-scrollbar-thumb {
+        background-color: #adb5bd;
+        border-radius: 15%;
+    }
+
+    .input-group-text{
+        width:160px;
+    }
+
+</style>
+
+<div class="container-fluid">
+
+    <div class="container p-5 my-5 border">
+
+
+    <form class="row g-3" action="{% url 'channel_join' %}" method="post">
+       <div class="g-3 row">
+        </div>
+
+        <div class="g-3 row">
+            <div class="input-group">
+                <span class="input-group-text">间隔</span>
+                <input type="text" class="form-control" value="8" name="sleep_time" id="sleep_time">
+                <span class="input-group-text">秒</span>
+            </div>
+        </div>
+
+        <div class="g-3 row">
+            <div class="input-group">
+                <span class="input-group-text">工作状态</span>
+                <select class="form-select" aria-label="Default select example" name="StartSetTemplate" id="StartSetTemplate">
+                        <option selected value="2">停止</option>
+                        <option value="1">开始</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-auto">
+            <button type="button" class="btn btn-primary mb-3" onclick="Bs91m.save_setTemplate()">保存</button>
+        </div>
+
+    </form>
+
+    </div>
+
+
+
+    <div class="container p-5 my-5 border" id="console-log"></div>
+    <div style="height:30px;"></div>
+</div>
+
+<script>
+
+    function addZero(s){
+        return s<10 ? ('0'+s):s;
+    }
+
+
+
+    function getNowTime(){
+        date = new Date();
+
+        // 年
+        var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+
+
+        return year + "-" + addZero(month) + "-" + addZero(day) + " " + addZero(hour) + ":" + addZero(minute) + ":" +addZero(second);
+    }
+
+
+
+
+
+
+
+    var channelSend = {}
+
+    channelSend.sleep_time = $("#sleep_time").val() * 1000;
+
+    $(function(){
+
+
+
+            // 获取账号  开始分发任务
+            Bs91m.init_SetTemplate = function(){
+
+                $.post("{% url 'get_setTemplate' %}", {}, function(result){
+
+                    console.log(result);
+                    if (result['status'] == true) {
+
+                        $("#console-log").prepend("<p>"+getNowTime()+" 本轮工作账号： "+result.list.length+" 个</p>");
+
+                        Bs91m.setTemplate_start(result['list'])
+                    } else {
+                        $("#console-log").prepend("<p>"+getNowTime()+" 没有需要设置模板的账号</p>");
+                    }
+
+                },'json')
+
+            }
+
+
+            Bs91m.setTemplate_start = function(number_list=[]){
+
+
+                if ($.isArray(number_list) != true) {
+
+                    $("#console-log").prepend("<p>"+getNowTime()+" 模板设置完成</p>");
+                    return false;
+                }
+
+
+                if (number_list.length <= 0) {
+
+                    $("#console-log").prepend("<p>"+getNowTime()+" 模板设置完成</p>");
+                    return false;
+                }
+
+
+                var Work_number = number_list.shift();
+                console.log(Work_number);
+
+                $.post("{% url 'setTemplate' %}", {session_string:Work_number.session_string}, function(result){
+
+
+                    var string = getNowTime()+" 账号： " + Work_number.session_string
+
+                    if (result.status === false) {
+                        string = string + " → 设置摸版：" + result.message;
+                    } else {
+                        string = string + " → " + result.messasge
+                    }
+                    $("#console-log").prepend("<p>"+string+ " </p>");
+
+                    console.log(result);
+
+                    setTimeout(function(){
+
+                        Bs91m.setTemplate_start(number_list)
+                    }, channelSend.sleep_time);
+
+                },'json')
+
+
+
+
+
+                return true;
+
+
+
+
+
+
+
+                // $.each(number_list, function(idx, item){
+
+                //     console.log(item);
+
+
+
+
+                // });
+
+                return true;
+
+            };
+
+
+
+
+
+            Bs91m.save_setTemplate = function(){
+
+                var StartSetTemplate = $("#StartSetTemplate").val();
+                console.log(StartSetTemplate)
+                if (StartSetTemplate == '1'){ // 任务开启工作
+                    // 间隔时间
+
+                    setTimeout(function(){ Bs91m.init_SetTemplate() }, 3000);
+
+                }
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    })
+
+
+</script>
+
+
+
+
+{% endblock 'content' %}

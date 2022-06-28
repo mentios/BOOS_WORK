@@ -1,0 +1,49 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+
+<style>
+    .top-message{
+        padding: 23px;
+        border: 1px solid #dedede;
+        margin: 20px;
+        border-radius:8px;
+    }
+
+</style>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+<!--                <p>系统不可以同时加群、群发、私信、私信轰炸、单独自动回复</p>-->
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div style="padding-bottom: 30px;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <th scope="col">官方销号（{{ context.session_number_count }}）个</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in context.session_number %}
+                    <tr>
+                        <td>
+                            {{ i.session_string }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div style="height:50px;"></div>
+</div>
+
+
+{% endblock 'content' %}

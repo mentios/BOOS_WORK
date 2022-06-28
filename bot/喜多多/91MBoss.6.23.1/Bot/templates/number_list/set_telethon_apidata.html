@@ -1,0 +1,100 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+
+<style>
+    .top-message{
+        padding: 23px;
+        border: 1px solid #dedede;
+        margin: 20px;
+        border-radius:8px;
+    }
+
+</style>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+                <p>开发账号越多，越有效避开官方的风控</p>
+                <p>多个开发账号，工作的时候系统会自动随机抽取其中一个做事</p>
+                <p>开发账号可以自己申请，也可购买</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+                <form class="row g-3" action="{% url 'set_telethon_apidata' %}" method="post">
+
+                    <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">PHONE/手机号</span>
+                            <input type="text" class="form-control" value="" name="phone">
+                        </div>
+                    </div>
+
+
+                    <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">api_id</span>
+                            <input type="text" class="form-control" value="" name="api_id">
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">api_hash</span>
+                            <input type="text" class="form-control"  name="api_hash">
+                        </div>
+                    </div>
+
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">新增开发号</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="row">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                <th scope="col">开发号（{{ context.content_count }}）条</th>
+                <th scope="col">phone/手机号</th>
+                <th scope="col">api_id</th>
+                <th scope="col">api_hash</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in context.list %}
+                <tr>
+                    <td>{{ i.name }}</td>
+                    <td>{{ i.content.phone }}</td>
+                    <td>{{ i.content.api_id }}</td>
+                    <td>{{ i.content.api_hash }}</td>
+                    <td>
+                        <a href="{% url 'telethon_delapiConfig' %}?name={{ i.name }}">
+                            <button type="button" class="btn btn-danger btn-sm">删除</button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div style="height:50px;"></div>
+</div>
+
+
+{% endblock 'content' %}

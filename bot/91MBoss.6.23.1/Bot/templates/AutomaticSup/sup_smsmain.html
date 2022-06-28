@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>91M Boss</title>
+
+<!--    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/sidebars/">-->
+<!--    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/dashboard/">-->
+
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    {% load static %}
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'assets/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <style>
+
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .sidebar{
+        height:100%,
+        overflow:auto
+      }
+
+
+
+
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'sidebars/sidebars.css' %}" rel="stylesheet">
+    <link href="{% static 'dashboard/dashboard.css' %}" rel="stylesheet">
+    <script>
+      var Bs91m = {}
+    </script>
+
+  </head>
+
+<style>
+    #console-log{
+        max-height:300px;
+        overflow:auto;
+    }
+
+    #console-log::-webkit-scrollbar-track {
+        background-color: #dee2e6;
+    }
+
+    #console-log::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #console-log::-webkit-scrollbar-thumb {
+        background-color: #adb5bd;
+        border-radius: 15%;
+    }
+
+    .input-group-text{
+        width:160px;
+    }
+
+</style>
+
+<div class="container-fluid">
+
+    <div class="container p-5 my-5 border">
+
+
+        <form class="row g-3" action="{% url 'sup_smsmain' %}" method="post">
+            <div class="g-3 row">
+               <div class="input-group">
+                    <input type="text" class="form-control" value="{{ context.result.api_id }}" name="api_id">
+               </div>
+            </div>
+
+            <div class="g-3 row">
+               <div class="input-group">
+                    <input type="text" class="form-control" value="{{ context.result.api_hash }}" name="api_hash">
+               </div>
+           </div>
+
+
+           <div class="g-3 row">
+               <div class="input-group">
+                    <input type="text" class="form-control" value="{{ context.api_data.phone }}" name="phone">
+               </div>
+           </div>
+
+           <div class="g-3 row">
+               <div class="input-group">
+                    <input type="text" class="form-control" value="{{ context.api_data.api_respose }}" name="api_respose" id="api_respose">
+               </div>
+           </div>
+
+           <div class="g-3 row">
+               <div class="input-group">
+                    <input type="text" class="form-control" value="{{ context.result.proxy.host }}" name="host" id="proxy_host">
+                    <input type="text" class="form-control" value="{{ context.result.proxy.port }}" name="port" id="proxy_port">
+                    <input type="text" class="form-control" value="{{ context.result.proxy.username }}" name="username" id="proxy_username">
+                    <input type="text" class="form-control" value="{{ context.result.proxy.password }}" name="password" id="proxy_password">
+               </div>
+           </div>
+
+           <div class="g-3 row">
+               <div class="input-group">
+                    <input type="text" class="form-control" value="{{ context.result.phone_code_hash }}" name="phone_code_hash" >
+               </div>
+           </div>
+
+
+           <div class="g-3 row">
+               <div class="input-group">
+                   <span class="input-group-text" style="width:80px;">验证码</span>
+                    <input type="text" class="form-control" value="" name="code" id="sup_code">
+               </div>
+           </div>
+
+            <input type="hidden" value="{{ context.result.submit_code }}" id="submit_code">
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary btn-sm" id="submit">提交</button>
+
+            </div>
+
+        </form>
+
+
+    </div>
+
+    <div class="container p-5 my-5 border" id="console-log">
+        <p>{{ context.result.message }}</p>
+    </div>
+
+</div>
+
+<script>
+    function addZero(s){
+        return s<10 ? ('0'+s):s;
+    }
+
+
+
+    function getNowTime(){
+        date = new Date();
+
+        // 年
+        var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+
+
+        return "【"+year + "-" + addZero(month) + "-" + addZero(day) + " " + addZero(hour) + ":" + addZero(minute) + ":" +addZero(second)+"】";
+    }
+
+
+
+
+
+    Bs91m = {};
+    Bs91m.timing = 0;
+
+
+    Bs91m.get_smsmain_code = function(){
+        Bs91m.timing = Bs91m.timing + 1;
+
+        if (Bs91m.timing > 1000) {
+            window.opener.postMessage({
+                p: "{{ context.api_data.api_respose }}"+"超过5分钟主动放弃",
+                code:"son_close"
+            });
+            window.close();
+            return false;
+        }
+
+        console.log(Bs91m.timing);
+
+
+        var api_respose = $("#api_respose").val();
+        $.ajax({
+            url:"{% url 'sup_smsmain_getcode' %}",
+            error:function(xhr){
+                $("#console-log").prepend("<p>"+getNowTime() + "错误提示： " + xhr.status + " " + xhr.statusText +"</p>");
+                setTimeout(function(){ Bs91m.get_smsmain_code() }, 800);
+		    },
+		    async:false,
+		    success:function(result){
+                console.log(result)
+                $("#console-log").prepend("<p>"+getNowTime() + result['message'] +"</p>");
+
+                if (result.status === true) {
+                    $("#sup_code").val(result['code']);
+                    $("#submit").click();
+
+                } else {
+                    if (result.submit_code && result.submit_code == 'close') {
+                        window.opener.postMessage({
+                            p:"{{ context.api_data.api_respose }}" + " → " + result['message'],
+                            code:"son_close"
+                        });
+                        window.close();
+                        return false;
+                    }
+
+                    setTimeout(function(){ Bs91m.get_smsmain_code() }, 800);
+                }
+
+		    },
+		    dataType:"json",
+		    data:{
+		        api_respose:api_respose,
+		        timing:Bs91m.timing
+		    },
+		    type:"POST"
+		});
+
+    }
+
+
+    $(function(){
+
+        var submit_code = $("#submit_code").val();
+        if (submit_code == 'close') {
+
+            window.opener.postMessage({
+                p:"{{ context.api_data.api_respose }}" + " → " + "{{ context.result.message }}",
+                code:"son_close"
+            });
+            window.close();
+            return false;
+        }
+
+
+        setTimeout(function(){ Bs91m.get_smsmain_code() }, 800);
+
+
+
+    });
+
+
+
+
+</script>
+
+
+
+
+ <script src="{% static 'assets/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'sidebars/sidebars.js' %}"></script>
+  <script src="{% static 'dashboard/dashboard.js' %}"></script>
+  </body>
+</html>
+

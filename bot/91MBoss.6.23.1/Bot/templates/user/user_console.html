@@ -1,0 +1,443 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+<style>
+    #console-log{
+        max-height:800px;
+        overflow:auto;
+
+    }
+
+    #console-log::-webkit-scrollbar-track {
+        background-color: #dee2e6;
+    }
+
+    #console-log::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #console-log::-webkit-scrollbar-thumb {
+        background-color: #adb5bd;
+        border-radius: 15%;
+    }
+
+    .input-group-text{
+        width:160px;
+    }
+
+</style>
+
+<div class="container-fluid">
+
+    <div class="container p-5 my-5 border" >
+
+
+
+
+
+
+
+
+
+
+    <form class="row g-3" action="{% url 'user_console' %}" method="post">
+
+
+        <div class="g-3 row">
+           <div class="input-group">
+                <span class="input-group-text">间隔时间</span>
+                <input type="text" class="form-control" value="{{ context.config.sleep_time }}" name="sleep_time" id="sleep_time">
+               <span class="input-group-text">秒</span>
+           </div>
+        </div>
+
+        <div class="g-3 row">
+           <div class="input-group">
+                <span class="input-group-text">是否启用伪内容</span>
+<!--                <input type="text" class="form-control" value="{{ context.config.is_fake_content }}" name="is_fake_content">-->
+
+
+                <select class="form-select" aria-label="Default select example" name="is_fake_content" id="is_fake_content">
+                    {% if context.config.is_fake_content == '2' %}
+                        <option selected value="2">不启用</option>
+                    {% else %}
+                        <option value="2">不启用</option>
+                    {% endif %}
+
+
+                    {% if context.config.is_fake_content == '1' %}
+                        <option value="1" selected>启用</option>
+                    {% else %}
+                        <option value="1">启用</option>
+                    {% endif %}
+                </select>
+
+<!--               <span class="input-group-text">1-启用，2-不启用</span>-->
+           </div>
+        </div>
+
+        <div class="g-3 row">
+           <div class="input-group">
+                <span class="input-group-text">伪内容生效时间</span>
+                <input type="text" class="form-control" value="{{ context.config.fake_content_sleep_time }}" name="fake_content_sleep_time">
+               <span class="input-group-text">秒</span>
+           </div>
+        </div>
+
+
+        <div class="g-3 row">
+           <div class="input-group">
+                <span class="input-group-text">轰炸次数</span>
+                <input type="text" class="form-control" value="{{ context.config.bombingNum }}" name="bombingNum" id="bombingNum">
+               <span class="input-group-text">次</span>
+           </div>
+        </div>
+
+        <div class="g-3 row">
+           <div class="input-group">
+                <span class="input-group-text">轰炸账号数量</span>
+                <input type="text" class="form-control" value="{{ context.config.numberNum }}" name="numberNum" id="numberNum">
+               <span class="input-group-text">个</span>
+           </div>
+        </div>
+
+
+        <div class="g-3 row">
+            <div class="input-group">
+                <span class="input-group-text">工作状态</span>
+<!--                <input type="text" class="form-control" value="{{ context.config.StartGroupSendTask }}" name="StartGroupSendTask" id="StartGroupSendTask">-->
+<!--                <span class="input-group-text">1-开始，2-停止</span>-->
+                <select class="form-select" aria-label="Default select example" name="StartGroupSendTask" id="StartGroupSendTask">
+                    {% if context.config.StartGroupSendTask == '2' %}
+                        <option selected value="2">停止</option>
+                    {% else %}
+                        <option value="2">停止</option>
+                    {% endif %}
+
+
+                    {% if context.config.StartGroupSendTask == '1' %}
+                        <option value="1" selected>开始</option>
+                    {% else %}
+                        <option value="1">开始</option>
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+
+
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">保存/生效</button>
+        </div>
+
+    </form>
+
+
+
+    </div>
+
+
+<div class="row">
+    <div class="col">
+        <div class="container p-5 my-5 border" style="height:200px;"><p>正在工作账号</p></div>
+    </div>
+
+    <div class="col" >
+        <div class="container p-5 my-5 border" style="height:200px; overflow:auto;">
+            <table class="table" id="table">
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+    <div class="container p-5 my-5 border" id="console-log">
+        <h6>工作日志：</h6>
+    </div>
+    <div style="height:150px;"></div>
+
+</div>
+
+<script>
+
+    function addZero(s){
+        return s<10 ? ('0'+s):s;
+    }
+
+
+
+    function getNowTime(){
+        date = new Date();
+
+        // 年
+        var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+
+
+        return year + "-" + addZero(month) + "-" + addZero(day) + " " + addZero(hour) + ":" + addZero(minute) + ":" +addZero(second);
+    }
+
+
+
+
+
+    var Bs91m = {}
+
+    Bs91m.sleep_time = $("#sleep_time").val() * 1000;
+
+    $(function(){
+
+
+
+            // 获取账号  开始分发任务
+            Bs91m.number_one = function(numberNum=0){
+
+                $("#table").html("");
+
+                if (numberNum == '0') {
+                    numberNum = $("#numberNum").val()
+                }
+
+                $.post("{% url 'get_PrivateLetterNumber' %}", {numberNum:numberNum}, function(result){
+
+                    if (result['status'] == true) {
+
+                        if (result['list'].length < 1) {
+                            $("#console-log").prepend("<p>"+getNowTime()+" 号已用完，没有补充成功</p>");
+                        }
+
+
+                        $.each(result['list'], function(idx, item){
+                            var table_html = "<tr><th>"+item['session_string']+"</th></tr>"
+                            $("#table").append(table_html);
+                        });
+
+                        $("#table2").html("")
+                        $.each(result['user'], function(idx, item){
+                            var table_html = "<tr><th>"+item+"</th></tr>"
+                            $("#table2").append(table_html);
+                        });
+                    }
+
+                },'json')
+
+            }
+
+
+            Bs91m.send_message_start = function(number_list=[]){
+
+                console.log(Bs91m.numberList);
+
+
+                if ($.isArray(number_list) != true) {
+
+
+
+
+
+                    setTimeout(function(){
+
+
+                        $("#console-log").prepend("<p>"+getNowTime()+" 本轮工作结束，5秒后开始新一轮任务</p>");
+                        Bs91m.number_work()
+                    }, 5000);
+                    return false;
+                }
+
+
+                if (number_list.length <= 0) {
+
+                    Bs91m.number_one($("#numberNum").val());
+
+                    setTimeout(function(){
+                        $("#console-log").prepend("<p>"+getNowTime()+" 本轮工作结束，5秒后开始新一轮任务</p>");
+                        Bs91m.number_work()
+                    }, 5000);
+                    return false;
+                }
+
+
+
+                var Work_number = number_list.shift();
+                console.log(Work_number);
+
+
+                // $("#console-log").prepend("<p>"+getNowTime()+" 账号： " + Work_number.session + " 开始发消息</p>");
+                $.post("{% url 'user_sendsubmit' %}", Work_number, function(result){
+
+
+                    if (result.result_code && result.result_code == 'del_table') {
+
+
+                        $.each($("#table").find("tr"), function(idx, item){
+                            var text = $(item).text();
+                            console.log(text)
+                            console.log(Work_number)
+                            if (text == Work_number.session) {
+                                $(item).remove();
+                            }
+                        });
+                    }
+
+
+                    var string = "【 " + getNowTime()+" 】 "
+
+                    if (result.status === false) {
+                        string = string + " → 私信失败：" + result.message;
+                    } else {
+                        string = string + " → 私信成功：" + result.message;
+                    }
+                    $("#console-log").prepend("<p>"+string+ " </p>");
+
+                    setTimeout(function(){
+
+                        Bs91m.send_message_start(number_list)
+                    }, Bs91m.sleep_time);
+
+                },'json')
+
+
+                return true;
+
+
+                return true;
+
+            };
+
+
+            Bs91m.shifp_group = function(data, num=3){
+                var result = [];
+                num = Number(num)
+                for(var i=0,len=data.length;i<len;i+=num){
+                    result.push(data.slice(i,i+num));
+                }
+                return result;
+            }
+
+
+            Bs91m.number_work = function(){
+
+                if ($("#table").find("tr").length < 1){
+                     $("#console-log").prepend("<p>"+getNowTime()+" 号已用完，等待补充</p>");
+                     setTimeout(function(){
+
+                        // 做事
+                        Bs91m.number_work();
+
+                     }, 10000);
+                     return false;
+                }
+
+                var session_list = []
+                $.each($("#table").find("tr"), function(idx, item){
+
+                    var session_string = $(item).text();
+                    session_list.push(session_string);
+                });
+
+
+                var bombingNum = $("#bombingNum").val();
+
+                Bs91m.numberList = Bs91m.shifp_group(session_list, bombingNum)
+
+
+                $.each(Bs91m.numberList, function(idx, item){
+                    item = item.toString(",");
+                    Bs91m.numberList[idx] = item
+                    //console.log(item);
+                });
+
+                console.log(Bs91m.numberList)
+
+                if (Bs91m.numberList.length >0) {
+
+                    $.post("{% url 'user_bombingMatch' %}", {session_list:Bs91m.numberList.join("=="), num:3243}, function(result){
+
+                        if (result.status === false) {
+                            var string = getNowTime()+" ： " + result.message;
+                            $("#console-log").prepend("<p>"+string+" </p>");
+                        }
+
+                        if (result.status === true) {
+                            var string = getNowTime()+" 成功匹配 ： " + result.api_list.length + "条数据，正在开始私信";
+
+                            $("#console-log").prepend("<p>"+string+" </p>");
+
+
+                            Bs91m.send_message_start(result.api_list)
+
+                        }
+
+
+                    },'json')
+
+                } else {
+
+
+                    setTimeout(function(){
+
+                        // 做事
+                        Bs91m.number_work();
+
+
+                    }, 3000);
+
+
+                }
+
+                // 匹配轰炸的对象
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+            var StartGroupSendTask = $("#StartGroupSendTask").val();
+            console.log(StartGroupSendTask)
+            if (StartGroupSendTask == '1'){ // 任务开启工作
+                // 间隔时间
+
+                // 上号
+                Bs91m.number_one(0);
+
+                setTimeout(function(){
+
+
+                    // 做事
+                    Bs91m.number_work();
+
+
+                }, 5000);
+
+
+            }
+
+
+
+
+
+
+    })
+
+
+</script>
+
+
+{% endblock 'content' %}
+

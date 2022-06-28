@@ -1,0 +1,109 @@
+{% extends "common/layout.html" %}
+{% block 'content' %}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+                <p></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col" >
+            <div class="top-message">
+                <form class="row g-3" action="{% url 'private_channel_save' %}" method="post">
+
+                    <div class="g-3 row">
+                        <div class="input-group">
+                            <span class="input-group-text">群组链接</span>
+                            <textarea required class="form-control" aria-label="With textarea" name="channel" id="channel" style="height:500px;">{{ context.channel }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">保存群组链接</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+        <div style="height:50px;"></div>
+    </div>
+
+
+
+<script>
+
+    function addZero(s){
+        return s<10 ? ('0'+s):s;
+    }
+
+
+
+    function getNowTime(){
+        date = new Date();
+
+        // 年
+        var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+
+
+        return year + "-" + addZero(month) + "-" + addZero(day) + " " + addZero(hour) + ":" + addZero(minute) + ":" +addZero(second);
+    }
+
+
+    var channelSend = {}
+    channelSend.sleep_time = $("#sleep_time").val() * 1000;
+
+
+
+    channelSend.init_joinChannel = function(){
+        $.post("{% url 'get_oknumber' %}", {}, function(result){
+
+            console.log(result);
+            if (result['status'] == true) {
+
+                $("#console-log").prepend("<p>"+getNowTime()+" 本轮工作账号： "+result.list.length+" 个</p>");
+
+                channelSend.joinChannel_start(result['list'])
+            } else {
+                setTimeout(function(){ channelSend.init_joinChannel() }, 10000);
+            }
+
+        },'json')
+    }
+
+
+     channelSend.joinChannel_start = function(list){
+        console.log(list);
+     }
+
+
+
+
+
+
+
+
+
+
+
+    var StartGroupSendTask = $("#StartGroupSendTask").val();
+    if (StartGroupSendTask == '1'){ // 任务开启工作
+        // 间隔时间
+
+        setTimeout(function(){ channelSend.init_joinChannel() }, 3000);
+
+    }
+</script>
+
+
+{% endblock 'content' %}
